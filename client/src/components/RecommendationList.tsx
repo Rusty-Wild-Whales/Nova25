@@ -21,7 +21,7 @@ const RecommendationList = ({ bills }: Props) => {
         const tags = deriveTags(bill);
         const preview = bill.excerpt ?? bill.text;
         return (
-          <li key={bill.id} className="rounded-2xl bg-white/90 p-5 shadow dark:bg-slate-800/80">
+          <li key={bill.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow dark:border-slate-700 dark:bg-slate-800/80">
             <div className="flex items-center justify-between text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">
               <span>{bill.state}</span>
               <span>{bill.category}</span>

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { summarize, recommend } from "../utils/ai";
+import { summarizeWithModal } from "../utils/modal";
 import type { Bill, SummaryResponse, UserProfile } from "../types";
 
 const router = Router();
@@ -23,15 +24,19 @@ router.get("/bills/:id", (req, res) => {
   return res.json(bill);
 });
 
-router.post("/simplify", (req, res) => {
+router.post("/simplify", async (req, res) => {
   const { billId, text, category } = req.body ?? {};
   if (!text || !category) {
     return res.status(400).json({ message: "Missing bill text or category" });
   }
 
-  // TODO: Replace mock summary generation with a real AI provider.
-  // const summary = await civicAiClient.summarize({ text, category });
-  const summary = summarize(text as string, category as string);
+  let summary: string | null = null;
+  if (process.env.USE_MODAL_SUMMARY !== "false") {
+    summary = await summarizeWithModal(text as string, category as string);
+  }
+  if (!summary) {
+    summary = summarize(text as string, category as string);
+  }
   const response: SummaryResponse = {
     billId: billId ?? 0,
     summary

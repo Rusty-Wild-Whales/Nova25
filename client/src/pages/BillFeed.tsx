@@ -86,27 +86,27 @@ const BillFeed = () => {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-10">
-      <section className="space-y-6 rounded-3xl bg-gradient-to-r from-primary to-slate-900 p-8 text-white shadow-lg">
+      <section className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 text-primary shadow dark:border-transparent dark:bg-gradient-to-r dark:from-primary dark:to-slate-900 dark:text-white">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.4em] text-accent">Live briefings</p>
             <h2 className="mt-2 text-3xl font-semibold">Personalized Policy Feed</h2>
-            <p className="mt-1 text-sm text-white/80">
+            <p className="mt-1 text-sm text-slate-500 dark:text-white/80">
               Search, filter, and explore legislation scraped directly from GovInfo. Tap a card to open the full text and
               AI simplification.
             </p>
           </div>
           <div className="grid grid-cols-3 gap-4 text-center text-sm">
-            <div className="rounded-2xl bg-white/10 p-4">
-              <p className="text-white/70">Active bills</p>
+            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+              <p className="text-slate-600 dark:text-white/70">Active bills</p>
               <p className="text-3xl font-bold text-accent">{activeCount}</p>
             </div>
-            <div className="rounded-2xl bg-white/10 p-4">
-              <p className="text-white/70">Recently enacted</p>
+            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+              <p className="text-slate-600 dark:text-white/70">Recently enacted</p>
               <p className="text-3xl font-bold text-accent">{enactedCount}</p>
             </div>
-            <div className="rounded-2xl bg-white/10 p-4">
-              <p className="text-white/70">Tags</p>
+            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+              <p className="text-slate-600 dark:text-white/70">Tags</p>
               <p className="text-3xl font-bold text-accent">{spotlightTags.length}</p>
             </div>
           </div>
@@ -117,12 +117,12 @@ const BillFeed = () => {
             placeholder="Search bills by title, topic, or text..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="rounded-2xl border border-white/40 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/60 focus:border-accent focus:outline-none"
+            className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-primary placeholder:text-slate-500 focus:border-accent focus:outline-none dark:border-white/40 dark:bg-white/10 dark:text-white dark:placeholder:text-white/60"
           />
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="rounded-2xl border border-white/40 bg-white/10 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
+            className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-primary focus:border-accent focus:outline-none dark:border-white/40 dark:bg-white/10 dark:text-white"
           >
             {statusOptions.map((option) => (
               <option key={option} value={option}>
@@ -133,7 +133,7 @@ const BillFeed = () => {
           <select
             value={selectedTag}
             onChange={(e) => setSelectedTag(e.target.value)}
-            className="rounded-2xl border border-white/40 bg-white/10 px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
+            className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-primary focus:border-accent focus:outline-none dark:border-white/40 dark:bg-white/10 dark:text-white"
           >
             {["All", ...spotlightTags].map((tag) => (
               <option key={tag} value={tag}>
@@ -144,7 +144,7 @@ const BillFeed = () => {
         </div>
         {spotlightTags.length > 0 && (
           <div>
-            <p className="text-xs uppercase tracking-wide text-white/70">Spotlight tags</p>
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white/70">Spotlight tags</p>
             <div className="mt-2">
               <TagList tags={spotlightTags} size="sm" />
             </div>
@@ -153,7 +153,7 @@ const BillFeed = () => {
       </section>
       <div className="grid gap-10 md:grid-cols-[2fr_1fr]">
         <section>
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {filteredBills.map((bill) => (
               <BillCard key={bill.id} bill={bill} />
             ))}

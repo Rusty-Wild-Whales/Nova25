@@ -5,7 +5,7 @@ CivicLens is a full-stack demo that improves U.S. policy literacy by scraping fe
 - **Frontend:** React 18, TypeScript, Vite, TailwindCSS, React Router DOM, Axios  
 - **Backend:** Node.js, Express, TypeScript, CORS  
 - **Data:** GovInfo bulk data (BILLSTATUS + BILLS XML) pulled via `scripts/scrape_bills.py`  
-- **Mock AI:** Simple extractive summarizer (`server/src/utils/ai.ts`)
+- **AI:** Modal-powered summarizer (`modal_app/summarizer.py`) with local extractive fallback (`server/src/utils/ai.ts`)
 
 ---
 
@@ -20,7 +20,8 @@ CivicLens is a full-stack demo that improves U.S. policy literacy by scraping fe
 ## Prerequisites
 - Node.js 18+
 - npm 9+
-- Python 3.9+ (for scraping)
+- Python 3.9+ (for scraping / Modal CLI)
+- [Modal](https://modal.com) CLI authenticated with `modal token new` (token already linked to `jessec2`)
 
 ---
 
@@ -45,6 +46,13 @@ python3 scripts/scrape_bills.py \
 ```
 - Increase `--max-number` or add more bill types for additional coverage.
 - If GovInfo rate-limits you, raise `--delay` (e.g., `0.15`) to be polite.
+
+### Optional: Remote AI Summaries via Modal
+1. Install the CLI: `pip install modal`
+2. Authenticate once: `modal token new` (copy/paste the URL if the browser doesn’t auto-launch)
+3. Keep the CLI on your `$PATH` and run the API from the repo root (so `modal_app` is discoverable)
+4. Leave `USE_MODAL_SUMMARY` unset (default) or set it to `true` to enable Modal executions
+5. To fall back to the local summarizer, export `USE_MODAL_SUMMARY=false`
 
 ### Run the Backend API
 ```bash
@@ -76,11 +84,15 @@ client/            # React + Vite app
 server/            # Express + TypeScript API
   src/
     routes/        # /api endpoints
-    utils/ai.ts    # Mock summarizer
+    utils/ai.ts    # Local summarizer fallback
+    utils/modal.ts # Spawns Modal CLI for remote summaries
     bills.json     # Scraped data source
 
 scripts/
   scrape_bills.py  # GovInfo scraper + merger
+
+modal_app/
+  summarizer.py    # Modal App definition (BART summarizer)
 ```
 
 ---
@@ -89,6 +101,7 @@ scripts/
 - Pulls BILLSTATUS XML across multiple congresses, follows the `textVersions` link, and stores the full bill text.
 - Adds derived metadata (`status`, `tags`, `excerpt`) so the UI can render meaningful chips and summaries.
 - Merge logic updates existing bills by title to avoid duplicates; rerun anytime for fresh data.
+- Summaries prefer Modal’s remote BART model when available, then fall back to the local extractive helper.
 
 ---
 

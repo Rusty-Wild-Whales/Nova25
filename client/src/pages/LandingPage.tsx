@@ -3,16 +3,11 @@ import { Link } from "react-router-dom";
 const LandingPage = () => {
   return (
     <main className="space-y-16">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-slate-900 to-black py-20 text-center text-white">
-        <div className="absolute inset-0 opacity-10" aria-hidden="true">
-          <div className="mx-auto h-full w-full max-w-4xl animate-pulse rounded-full bg-accent blur-[160px]" />
-        </div>
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white py-16 text-center text-primary shadow dark:border-transparent dark:bg-gradient-to-br dark:from-primary dark:via-slate-900 dark:to-black dark:text-white">
         <div className="relative mx-auto flex max-w-4xl flex-col gap-6 px-4">
           <p className="text-xs uppercase tracking-[0.6em] text-accent">CivicLens</p>
-          <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
-            Decode legislation with AI-powered civic briefings.
-          </h1>
-          <p className="text-lg text-white/80">
+          <h1 className="text-4xl font-semibold leading-tight md:text-5xl">Decode legislation with human-readable AI.</h1>
+          <p className="text-lg text-slate-600 dark:text-white/80">
             CivicLens scrapes real bill text from GovInfo, condenses it with explainable AI, and gives you tools to track
             policies that touch your community.
           </p>
@@ -23,7 +18,7 @@ const LandingPage = () => {
             >
               Explore Policies
             </Link>
-            <Link to="/profile" className="rounded-full border border-white/40 px-8 py-3 text-white">
+            <Link to="/profile" className="rounded-full border border-primary px-8 py-3 text-primary dark:border-white/40 dark:text-white">
               Personalize my feed
             </Link>
           </div>
@@ -33,9 +28,9 @@ const LandingPage = () => {
               { label: "Congress sessions", value: "117th–118th" },
               { label: "AI briefs generated", value: "Instant" }
             ].map((item) => (
-              <div key={item.label} className="rounded-2xl bg-white/10 p-4 text-left">
+              <div key={item.label} className="rounded-2xl bg-slate-50 p-4 text-left dark:bg-white/10">
                 <p className="text-2xl font-semibold text-accent">{item.value}</p>
-                <p className="text-xs uppercase tracking-wide text-white/70">{item.label}</p>
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white/70">{item.label}</p>
               </div>
             ))}
           </div>

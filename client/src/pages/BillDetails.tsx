@@ -53,7 +53,7 @@ const BillDetails = () => {
       <Link to="/feed" className="text-sm text-primary underline dark:text-accent">
         ← Back to feed
       </Link>
-      <div className="rounded-3xl bg-gradient-to-r from-primary to-slate-900 p-8 text-white shadow-xl">
+      <div className="rounded-3xl border border-slate-200 bg-white p-8 text-primary shadow dark:border-transparent dark:bg-gradient-to-r dark:from-primary dark:to-slate-900 dark:text-white">
         <p className="text-xs uppercase tracking-[0.3em] text-accent">Bill brief</p>
         <h1 className="mt-3 text-4xl font-semibold leading-tight">{bill.title}</h1>
         <p className="mt-4 max-w-3xl text-sm text-white/85">{bill.excerpt ?? summary}</p>
