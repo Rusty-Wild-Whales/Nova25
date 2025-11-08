@@ -21,4 +21,10 @@ export interface UserProfile {
   age: number;
   state: string;
   interests: string[];
+  email?: string;
+  policyFocus?: string;
+  newsFrequency?: "daily" | "weekly" | "monthly";
+  contactPreference?: "email" | "sms" | "none";
+  sendAlerts?: boolean;
+  notes?: string;
 }

@@ -13,25 +13,31 @@ const cleanSentences = (text: string): string[] => {
     .filter(Boolean);
 };
 
+const simplifySentence = (sentence: string): string => {
+  const trimmed = sentence
+    .replace(/Section\s+\d+/gi, "this bill")
+    .replace(/Notwithstanding.*?[,;]/gi, "")
+    .replace(/\bshall\b/gi, "will")
+    .replace(/\bthereof\b/gi, "of it");
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+};
+
 export function summarize(text: string, category: string): string {
   const sentences = cleanSentences(text);
   if (!sentences.length) {
-    return `This ${category.toLowerCase()} bill currently lacks detailed text, but CivicLens will summarize it when the full language becomes available.`;
+    return `Plain-language recap:\n- This ${category.toLowerCase()} bill currently lacks detailed text, but CivicLens will summarize it when the full language becomes available.`;
   }
 
-  const intro = sentences.slice(0, Math.min(MAX_SENTENCES, sentences.length)).join(" ");
-  const closing =
-    sentences.length > MAX_SENTENCES
-      ? sentences.slice(-2).join(" ")
-      : sentences.slice(-1).join(" ");
+  const takeaways = sentences.slice(0, MAX_SENTENCES).map((sentence) => simplifySentence(sentence));
 
-  return [
-    `Focus area: ${category}.`,
-    intro,
-    sentences.length > MAX_SENTENCES ? `Key follow-up: ${closing}` : ""
-  ]
-    .filter(Boolean)
-    .join(" ");
+  if (takeaways.length < MAX_SENTENCES && sentences.length > MAX_SENTENCES) {
+    takeaways.push(simplifySentence(sentences[sentences.length - 1]));
+  }
+
+  const bullets = takeaways.map((sentence) => `- ${sentence}`);
+  return [`Plain-language recap (${category}):`, ...bullets, "- Track agency updates and funding details in committee markups."].join(
+    "\n"
+  );
 }
 
 export function recommend(bills: Bill[], userProfile: UserProfile): Bill[] {

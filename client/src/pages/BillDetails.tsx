@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getBillById, simplifyBill } from "../utils/api";
+import { getBillById, getBills, simplifyBill } from "../utils/api";
 import type { Bill } from "../types";
 import TagList from "../components/TagList";
 import { deriveTags } from "../utils/tags";
@@ -10,6 +10,7 @@ const BillDetails = () => {
   const [bill, setBill] = useState<Bill | null>(null);
   const [summary, setSummary] = useState<string>("");
   const [status, setStatus] = useState({ loading: true, error: "" });
+  const [related, setRelated] = useState<Bill[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -19,6 +20,10 @@ const BillDetails = () => {
         setBill(data);
         const aiSummary = await simplifyBill(data);
         setSummary(aiSummary.summary);
+        const allBills = await getBills();
+        setRelated(
+          allBills.filter((item) => item.id !== data.id && item.category === data.category).slice(0, 3)
+        );
         setStatus({ loading: false, error: "" });
       } catch (error) {
         console.error(error);
@@ -95,6 +100,25 @@ const BillDetails = () => {
           </article>
         </section>
       </div>
+      {related.length > 0 && (
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow dark:border-slate-700 dark:bg-slate-800">
+          <h3 className="text-xl font-semibold text-primary dark:text-white">More in {bill.category}</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-300">Explore similar legislation scraped this session.</p>
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            {related.map((item) => (
+              <Link
+                key={item.id}
+                to={`/bill/${item.id}`}
+                className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left text-sm text-primary shadow hover:border-accent dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              >
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">{item.status}</p>
+                <p className="mt-1 font-semibold">{item.title}</p>
+                <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">{item.excerpt?.slice(0, 140) ?? ""}…</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -25,7 +25,9 @@ const BillCard = ({ bill }: Props) => {
       {bill.status && (
         <p className="mt-1 text-sm font-medium text-accent">Status: {bill.status}</p>
       )}
-      <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200 line-clamp-4">{preview}</p>
+      <p className="mt-3 max-h-32 overflow-hidden text-sm leading-relaxed text-slate-600 dark:text-slate-200">
+        {preview}
+      </p>
       <div className="mt-4">
         <TagList tags={tags} size="sm" />
       </div>

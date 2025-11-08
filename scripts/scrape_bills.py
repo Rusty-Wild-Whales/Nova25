@@ -265,15 +265,23 @@ def main(args: argparse.Namespace) -> int:
     raise SystemExit(f"Could not find {BILLS_PATH}. Run from repository root.")
 
   bill_types = [bill_type.strip().lower() for bill_type in args.types.split(",") if bill_type.strip()]
-  new_records = collect(
-    congress=args.congress,
-    bill_types=bill_types,
-    active_limit=args.active_limit,
-    passed_limit=args.passed_limit,
-    max_number=args.max_number,
-    missing_limit=args.missing_limit,
-    delay=args.delay,
-  )
+  congresses = [value.strip() for value in args.congresses.split(",") if value.strip()]
+  if not congresses:
+    raise SystemExit("Provide at least one congress via --congresses.")
+
+  new_records: List[dict] = []
+  for congress in congresses:
+    new_records.extend(
+      collect(
+        congress=congress,
+        bill_types=bill_types,
+        active_limit=args.active_limit,
+        passed_limit=args.passed_limit,
+        max_number=args.max_number,
+        missing_limit=args.missing_limit,
+        delay=args.delay,
+      )
+    )
 
   existing = json.loads(BILLS_PATH.read_text())
   merged = merge(existing, new_records)
@@ -284,11 +292,11 @@ def main(args: argparse.Namespace) -> int:
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="Scrape bill summaries from GovInfo bulk data")
-  parser.add_argument("--congress", default="118", help="Congress number (e.g., 118)")
-  parser.add_argument("--types", default="hr,s", help="Comma-separated bill types to scan (hr,s,hjres,sjres)")
-  parser.add_argument("--active-limit", type=int, default=5, help="Target count of in-progress bills")
-  parser.add_argument("--passed-limit", type=int, default=5, help="Target count of recently passed/enacted bills")
+  parser.add_argument("--congresses", default="118,117", help="Comma-separated congress numbers (e.g., 118,117)")
+  parser.add_argument("--types", default="hr,s,hjres,sjres", help="Comma-separated bill types to scan")
+  parser.add_argument("--active-limit", type=int, default=6, help="Target count of in-progress bills per congress")
+  parser.add_argument("--passed-limit", type=int, default=6, help="Target count of recently passed/enacted bills per congress")
   parser.add_argument("--max-number", type=int, default=400, help="Highest bill number to scan for each type")
-  parser.add_argument("--missing-limit", type=int, default=50, help="Stop scanning a bill type after this many consecutive misses")
+  parser.add_argument("--missing-limit", type=int, default=60, help="Stop scanning a bill type after this many consecutive misses")
   parser.add_argument("--delay", type=float, default=0.15, help="Seconds to wait between requests (set 0 to disable)")
   raise SystemExit(main(parser.parse_args()))

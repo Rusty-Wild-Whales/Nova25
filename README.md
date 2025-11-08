@@ -36,13 +36,15 @@ cd ../client && npm install
 ```bash
 cd ..
 python3 scripts/scrape_bills.py \
+  --congresses 118,117 \
+  --types hr,s,hjres,sjres \
   --active-limit 6 \
   --passed-limit 6 \
   --max-number 250 \
   --delay 0
 ```
-- Adjust `--max-number` and `--types` (default `hr,s`) for broader coverage.
-- If GovInfo rate-limits you, raise `--delay` to ~0.15 seconds.
+- Increase `--max-number` or add more bill types for additional coverage.
+- If GovInfo rate-limits you, raise `--delay` (e.g., `0.15`) to be polite.
 
 ### Run the Backend API
 ```bash
@@ -67,7 +69,7 @@ npm run dev
 ```
 client/            # React + Vite app
   src/
-    components/    # Header, cards, tags, recommendation list
+    components/    # Header, cards, filters, tags, recommendation list
     pages/         # Landing, feed, detail, profile
     utils/         # Axios client, tag helpers
 
@@ -84,7 +86,7 @@ scripts/
 ---
 
 ## Scraper Notes
-- Pulls BILLSTATUS XML from GovInfo, follows the `textVersions` link, and stores the full bill text.
+- Pulls BILLSTATUS XML across multiple congresses, follows the `textVersions` link, and stores the full bill text.
 - Adds derived metadata (`status`, `tags`, `excerpt`) so the UI can render meaningful chips and summaries.
 - Merge logic updates existing bills by title to avoid duplicates; rerun anytime for fresh data.
 

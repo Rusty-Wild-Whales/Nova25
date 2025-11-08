@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CivicLens</title>
+    <script>
+      (function () {
+        const storedTheme = localStorage.getItem("civiclens-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
   </head>
   <body class="min-h-screen bg-slate-50 text-primary dark:bg-slate-900 dark:text-slate-100">
     <div id="root"></div>

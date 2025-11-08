@@ -12,6 +12,10 @@ const Header = () => {
     if (typeof window === "undefined") {
       return false;
     }
+    const stored = localStorage.getItem("civiclens-theme");
+    if (stored) {
+      return stored === "dark";
+    }
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
@@ -19,8 +23,10 @@ const Header = () => {
     const root = document.documentElement;
     if (darkMode) {
       root.classList.add("dark");
+      localStorage.setItem("civiclens-theme", "dark");
     } else {
       root.classList.remove("dark");
+      localStorage.setItem("civiclens-theme", "light");
     }
   }, [darkMode]);
 
@@ -43,8 +49,11 @@ const Header = () => {
             </NavLink>
           ))}
           <button
+            type="button"
             onClick={() => setDarkMode((prev) => !prev)}
             className="rounded-full border border-white/40 px-3 py-1 text-xs"
+            aria-pressed={darkMode}
+            aria-label={`Switch to ${darkMode ? "light" : "dark"} mode`}
           >
             {darkMode ? "Light" : "Dark"} mode
           </button>
