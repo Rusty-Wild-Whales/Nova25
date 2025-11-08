@@ -1,3 +1,4 @@
+from pathlib import Path
 import modal
 
 app = modal.App("civiclens-summarizer")
@@ -29,6 +30,15 @@ class Summarizer:
 
 
 @app.local_entrypoint()
-def main(text: str, category: str = "General"):
-    summary = Summarizer().summarize.remote(text, category)
+def main(
+  text: str | None = None,
+  text_file: str | None = None,
+  category: str = "General"
+):
+    payload = text
+    if text_file:
+        payload = Path(text_file).read_text()
+    if not payload:
+        raise SystemExit("No text provided for summarization.")
+    summary = Summarizer().summarize.remote(payload, category)
     print(summary)
