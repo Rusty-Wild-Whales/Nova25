@@ -56,18 +56,18 @@ const BillDetails = () => {
       <div className="rounded-3xl border border-slate-200 bg-white p-8 text-primary shadow dark:border-transparent dark:bg-gradient-to-r dark:from-primary dark:to-slate-900 dark:text-white">
         <p className="text-xs uppercase tracking-[0.3em] text-accent">Bill brief</p>
         <h1 className="mt-3 text-4xl font-semibold leading-tight">{bill.title}</h1>
-        <p className="mt-4 max-w-3xl text-sm text-white/85">{bill.excerpt ?? summary}</p>
+        <p className="mt-4 max-w-3xl text-sm text-slate-600 dark:text-white/85">{bill.excerpt ?? summary}</p>
         <div className="mt-6 grid gap-4 text-sm font-semibold md:grid-cols-3">
-          <div className="rounded-2xl bg-white/10 p-4">
-            <p className="text-xs uppercase tracking-wide text-white/70">Status</p>
+          <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white/70">Status</p>
             <p className="text-2xl text-accent">{bill.status ?? "Active"}</p>
           </div>
-          <div className="rounded-2xl bg-white/10 p-4">
-            <p className="text-xs uppercase tracking-wide text-white/70">Source</p>
+          <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white/70">Source</p>
             <p className="text-2xl">{bill.source ?? "GovInfo"}</p>
           </div>
-          <div className="rounded-2xl bg-white/10 p-4">
-            <p className="text-xs uppercase tracking-wide text-white/70">Introduced</p>
+          <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white/70">Introduced</p>
             <p className="text-2xl">{new Date(bill.dateIntroduced).toLocaleDateString()}</p>
           </div>
         </div>

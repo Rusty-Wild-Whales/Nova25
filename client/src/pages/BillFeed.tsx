@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import BillCard from "../components/BillCard";
 import RecommendationList from "../components/RecommendationList";
 import TagList from "../components/TagList";
+import SectionHeader from "../components/SectionHeader";
 import { getBills, getRecommendations } from "../utils/api";
 import { deriveTags } from "../utils/tags";
 import type { Bill, UserProfile } from "../types";
@@ -19,12 +20,11 @@ const BillFeed = () => {
       try {
         const response = await getBills();
         setBills(response);
+        setStatus({ loading: false, error: null });
       } catch (error) {
         console.error(error);
         setStatus({ loading: false, error: "Unable to load policies" });
-        return;
       }
-      setStatus({ loading: false, error: null });
     };
     fetchBills();
   }, []);
@@ -49,7 +49,7 @@ const BillFeed = () => {
   }, []);
 
   const spotlightTags = useMemo(
-    () => Array.from(new Set(bills.flatMap((bill) => deriveTags(bill)))).slice(0, 10),
+    () => Array.from(new Set(bills.flatMap((bill) => deriveTags(bill)))).slice(0, 12),
     [bills]
   );
 
@@ -58,9 +58,6 @@ const BillFeed = () => {
     bills.forEach((bill) => bill.status && set.add(bill.status));
     return Array.from(set);
   }, [bills]);
-
-  const activeCount = bills.filter((bill) => (bill.status ?? "").toLowerCase() !== "enacted").length;
-  const enactedCount = bills.length - activeCount;
 
   const filteredBills = useMemo(() => {
     return bills.filter((bill) => {
@@ -84,40 +81,43 @@ const BillFeed = () => {
     return <p className="p-6 text-center text-red-500">{status.error}</p>;
   }
 
+  const activeCount = bills.filter((bill) => (bill.status ?? "").toLowerCase() !== "enacted").length;
+  const enactedCount = bills.length - activeCount;
+
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-10">
-      <section className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 text-primary shadow dark:border-transparent dark:bg-gradient-to-r dark:from-primary dark:to-slate-900 dark:text-white">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-accent">Live briefings</p>
-            <h2 className="mt-2 text-3xl font-semibold">Personalized Policy Feed</h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-white/80">
-              Search, filter, and explore legislation scraped directly from GovInfo. Tap a card to open the full text and
-              AI simplification.
-            </p>
+      <section className="rounded-[32px] border border-slate-200 bg-white p-8 shadow dark:border-slate-800 dark:bg-slate-900">
+        <SectionHeader
+          eyebrow="Live briefings"
+          title="Personalized policy feed"
+          description="Search, filter, and explore legislation scraped directly from GovInfo. Tap a card to open the full text and AI simplification."
+          align="left"
+        />
+        <div className="mt-6 grid gap-4 lg:grid-cols-4">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Active bills</p>
+            <p className="text-3xl font-bold text-accent">{activeCount}</p>
           </div>
-          <div className="grid grid-cols-3 gap-4 text-center text-sm">
-            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
-              <p className="text-slate-600 dark:text-white/70">Active bills</p>
-              <p className="text-3xl font-bold text-accent">{activeCount}</p>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
-              <p className="text-slate-600 dark:text-white/70">Recently enacted</p>
-              <p className="text-3xl font-bold text-accent">{enactedCount}</p>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-white/10">
-              <p className="text-slate-600 dark:text-white/70">Tags</p>
-              <p className="text-3xl font-bold text-accent">{spotlightTags.length}</p>
-            </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Recently enacted</p>
+            <p className="text-3xl font-bold text-accent">{enactedCount}</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Tags</p>
+            <p className="text-3xl font-bold text-accent">{spotlightTags.length}</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Recs ready</p>
+            <p className="text-3xl font-bold text-accent">{recommendations.length}</p>
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
           <input
             type="search"
             placeholder="Search bills by title, topic, or text..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-primary placeholder:text-slate-500 focus:border-accent focus:outline-none dark:border-white/40 dark:bg-white/10 dark:text-white dark:placeholder:text-white/60"
+            className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-primary placeholder:text-slate-500 focus:border-accent focus:outline-none dark:border-white/40 dark:bg-white/10 dark:text-white"
           />
           <select
             value={selectedStatus}
@@ -143,7 +143,7 @@ const BillFeed = () => {
           </select>
         </div>
         {spotlightTags.length > 0 && (
-          <div>
+          <div className="mt-4">
             <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-white/70">Spotlight tags</p>
             <div className="mt-2">
               <TagList tags={spotlightTags} size="sm" />
@@ -151,7 +151,8 @@ const BillFeed = () => {
           </div>
         )}
       </section>
-      <div className="grid gap-10 md:grid-cols-[2fr_1fr]">
+
+      <div className="grid gap-10 lg:grid-cols-[1.6fr_0.9fr]">
         <section>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {filteredBills.map((bill) => (
@@ -164,16 +165,10 @@ const BillFeed = () => {
             )}
           </div>
         </section>
-        <aside className="space-y-4">
-          <div className="rounded-3xl border border-slate-200 bg-white/90 p-6 dark:border-slate-700 dark:bg-slate-800/80">
-            <h3 className="text-lg font-semibold text-primary dark:text-white">Recommended for you</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-300">
-              Tailored using your saved profile preferences.
-            </p>
-            <div className="mt-4">
-              <RecommendationList bills={recommendations} />
-            </div>
-          </div>
+        <aside className="space-y-4 rounded-[32px] border border-slate-200 bg-white p-6 shadow dark:border-slate-800 dark:bg-slate-900">
+          <h3 className="text-lg font-semibold text-primary dark:text-white">Recommended for you</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-300">Tailored using your saved profile preferences.</p>
+          <RecommendationList bills={recommendations} />
         </aside>
       </div>
     </div>

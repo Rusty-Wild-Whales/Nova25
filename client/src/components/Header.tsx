@@ -9,13 +9,9 @@ const navItems = [
 
 const Header = () => {
   const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
+    if (typeof window === "undefined") return false;
     const stored = localStorage.getItem("civiclens-theme");
-    if (stored) {
-      return stored === "dark";
-    }
+    if (stored) return stored === "dark";
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
@@ -31,18 +27,22 @@ const Header = () => {
   }, [darkMode]);
 
   return (
-    <header className="bg-primary text-white dark:bg-slate-900">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-        <NavLink to="/" className="font-semibold tracking-wide">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <NavLink to="/" className="text-lg font-semibold text-primary dark:text-white">
           CivicLens
         </NavLink>
-        <nav className="flex items-center gap-6 text-sm uppercase tracking-wide">
+        <nav className="flex items-center gap-4 text-sm font-medium text-primary dark:text-slate-200">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `hover:text-accent ${isActive ? "text-accent" : "text-white"}`
+                `rounded-full px-3 py-1 transition ${
+                  isActive
+                    ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white"
+                    : "text-slate-600 hover:text-primary dark:text-slate-300"
+                }`
               }
             >
               {item.label}
@@ -51,11 +51,11 @@ const Header = () => {
           <button
             type="button"
             onClick={() => setDarkMode((prev) => !prev)}
-            className="rounded-full border border-white/40 px-3 py-1 text-xs"
+            className="rounded-full border border-slate-300 px-3 py-1 text-xs uppercase tracking-wide text-slate-600 transition hover:border-primary dark:border-white/30 dark:text-white"
             aria-pressed={darkMode}
             aria-label={`Switch to ${darkMode ? "light" : "dark"} mode`}
           >
-            {darkMode ? "Light" : "Dark"} mode
+            {darkMode ? "Light" : "Dark"}
           </button>
         </nav>
       </div>
